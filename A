@@ -1,1 +1,180 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
+contract Lottery {
+    uint256 public jackpotAmount;
+    mapping(address => uint256[]) public userCombinations;
+    address public owner;
+
+    event CombinationPurchased(address indexed user, uint256[] combination);
+    event JackpotUpdated(uint256 amount);
+    event Winner(address indexed user, string prize);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+        jackpotAmount = 1000000 * 1e18; // Initial jackpot in wei (assuming 1e18 wei = 1 Ether)
+    }
+
+    function purchaseCombination(uint256[] memory combination) public payable {
+        require(msg.value == 5 * 1e18, "Each combination costs 5 Ether");
+        
+        // Half of the ticket price goes to the jackpot
+        jackpotAmount += msg.value / 2;
+
+        userCombinations[msg.sender] = combination;
+        
+        emit CombinationPurchased(msg.sender, combination);
+        emit JackpotUpdated(jackpotAmount);
+    }
+
+    function checkIfUserWon(uint256 blueBall, uint256[] memory redBalls) public onlyOwner {
+        uint256 firstPrize = jackpotAmount * 65 / 100;
+        uint256 secondPrize = jackpotAmount * 20 / 100;
+        uint256 thirdPrize = jackpotAmount * 10 / 100;
+        uint256 fourthPrize = jackpotAmount * 5 / 100;
+
+        for (address user : userCombinations) {
+            uint256[] memory combination = userCombinations[user];
+            uint256 userBlueBall = combination[0];
+            uint256[] memory userRedBalls = new uint256[](4);
+            for (uint256 i = 1; i < combination.length; i++) {
+                userRedBalls[i-1] = combination[i];
+            }
+
+            uint256 matchingRedBalls = 0;
+            for (uint256 i = 0; i < redBalls.length; i++) {
+                for (uint256 j = 0; j < userRedBalls.length; j++) {
+                    if (redBalls[i] == userRedBalls[j]) {
+                        matchingRedBalls++;
+                    }
+                }
+            }
+
+            if (userBlueBall == blueBall && matchingRedBalls == 4) {
+                payable(user).transfer(firstPrize);
+                emit Winner(user, "一等奖");
+            } else if ((userBlueBall == blueBall && matchingRedBalls == 3) || matchingRedBalls == 4) {
+                payable(user).transfer(secondPrize);
+                emit Winner(user, "二等奖");
+            } else if (userBlueBall == blueBall && matchingRedBalls == 2) {
+                payable(user).transfer(thirdPrize);
+                emit Winner(user, "三等奖");
+            } else if (userBlueBall == blueBall) {
+                payable(user).transfer(fourthPrize);
+                emit Winner(user, "四等奖");
+            }
+        }
+    }
+}
+npx create-react-app lottery-dapp
+cd lottery-dapp
+npm install web3
+import React, { useState, useEffect } from 'react';
+import Web3 from 'web3';
+import LotteryContract from './contracts/Lottery.json';
+
+const LotteryDapp = () => {
+    const [web3, setWeb3] = useState(null);
+    const [account, setAccount] = useState('');
+    const [lottery, setLottery] = useState(null);
+    const [jackpot, setJackpot] = useState(0);
+    const [combinations, setCombinations] = useState([]);
+    const [blueBall, setBlueBall] = useState(0);
+    const [redBalls, setRedBalls] = useState([0, 0, 0, 0]);
+    const [result, setResult] = useState('');
+
+    useEffect(() => {
+        const init = async () => {
+            const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
+            const accounts = await web3.eth.requestAccounts();
+            const networkId = await web3.eth.net.getId();
+            const deployedNetwork = LotteryContract.networks[networkId];
+            const lottery = new web3.eth.Contract(
+                LotteryContract.abi,
+                deployedNetwork && deployedNetwork.address,
+            );
+
+            setWeb3(web3);
+            setAccount(accounts[0]);
+            setLottery(lottery);
+
+            const jackpotAmount = await lottery.methods.jackpotAmount().call();
+            setJackpot(web3.utils.fromWei(jackpotAmount, 'ether'));
+        };
+
+        init();
+    }, []);
+
+    const handlePurchase = async () => {
+        const combination = [blueBall, ...redBalls];
+        const value = web3.utils.toWei('5', 'ether');
+
+        await lottery.methods.purchaseCombination(combination).send({
+            from: account,
+            value,
+        });
+
+        const jackpotAmount = await lottery.methods.jackpotAmount().call();
+        setJackpot(web3.utils.fromWei(jackpotAmount, 'ether'));
+        setCombinations([...combinations, combination]);
+    };
+
+    const handleCheckWinner = async () => {
+        await lottery.methods.checkIfUserWon(blueBall, redBalls).send({
+            from: account,
+        });
+
+        lottery.events.Winner().on('data', event => {
+            setResult(`中奖用户: ${event.returnValues.user}, 奖项: ${event.returnValues.prize}`);
+        });
+    };
+
+    return (
+        <div>
+            <h1>本期开奖号码</h1>
+            <div>
+                <div>蓝色球: {blueBall}</div>
+                <div>红色球: {redBalls.join(', ')}</div>
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="蓝色球 (1-12)"
+                    value={blueBall}
+                    onChange={e => setBlueBall(e.target.value)}
+                />
+                {redBalls.map((redBall, index) => (
+                    <input
+                        key={index}
+                        type="number"
+                        placeholder={`红色球${index + 1} (1-26)`}
+                        value={redBall}
+                        onChange={e => {
+                            const newRedBalls = [...redBalls];
+                            newRedBalls[index] = e.target.value;
+                            setRedBalls(newRedBalls);
+                        }}
+                    />
+                ))}
+                <button onClick={handlePurchase}>购买号码组合</button>
+            </div>
+            <div>奖金池: {jackpot} ETH</div>
+            <button onClick={handleCheckWinner}>检查中奖</button>
+            <div>{result}</div>
+        </div>
+    );
+};
+
+export default LotteryDapp;
+const Lottery = artifacts.require("Lottery");
+
+module.exports = function(deployer) {
+  deployer.deploy(Lottery);
+};
+npx truffle compile
+npm start

@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashcow Project Private Placement</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            padding: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        .intro, .details, .address, .info {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px -2px gray;
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+        .address {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .address input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .copy-button {
+            margin-left: 10px;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Cashcow项目私募</div>
+    <div class="intro">
+        Cashcow是全球首款区块链彩票项目，拥有巨大的市场前景，期待您的投资！
+    </div>
+    <div class="details">
+        本次私募价格为每枚Cashcow 0.005U，私募资金将用于开发以及市场宣传。
+    </div>
+    <div class="address">
+        <input type="text" value="0x5111f810c1af3ae200ac683cca63ead9a73d559c" id="wallet-address" readonly>
+        <button class="copy-button" onclick="copyToClipboard()">复制</button>
+    </div>
+    <div class="info">
+        私募总数量为1亿枚Cashcow,接收代币24小时内会将对应的Cashcow转入打币钱包地址。
+    </div>
 
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("wallet-address");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+            alert("钱包地址已复制: " + copyText.value);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+  Cashcow Whitepaper
+The World's First Blockchain Lottery Application
+Cashcow is an innovative lottery project aimed at providing users with efficient, convenient, and secure lottery services through advanced technology and innovative business models. Our goal is to become an industry-leading lottery platform, helping users achieve more and fairer chances of winning.
+A New Lottery Mechanism Built on Ethereum
+Token Issuance: The total issuance is 10 billion tokens, of which 1.5 billion are reserved by the project team for promotion and fundraising, with 500 million tokens locked for 18 months. The remaining 8.5 billion tokens are locked in smart contracts for subsequent distribution to users participating in the project and for prize distribution.
+Distribution Mechanism:
+15% of sales revenue is allocated to the project fund for operational purposes.
+35% goes into the token fund pool, used to purchase Cashcow tokens earned by users.
+50% enters the current prize pool, allocated to winning users.
+Profit Distribution: The top 100 addresses holding Cashcow tokens will receive an average distribution of 70% of the project's profits, with dividends distributed automatically by the contract on the 28th of each month.
+Two Initial Lottery Gameplays
+1. Five-Ball Lottery
+Draw 1 blue ball number from 1-15 and 4 red ball numbers from 1-26, totaling 5 numbers.
+Each bet costs 5U.
+Prize Tiers and Conditions
+First Prize: Matching all 5 numbers (4 reds and 1 blue, in any order).
+Second Prize: Matching 4 red numbers or any 3 red numbers and 1 blue number.
+Third Prize: Matching any 2 red numbers and 1 blue number.
+Fourth Prize: Matching only the blue number (regardless of red numbers).
+Prize Money and Allocation
+Total Prize Fund: 50% of sales revenue.
+Prize Allocation:
+First Prize: 65% of the current prize pool + 10 million Cashcow tokens.
+Second Prize: 20% of the current prize pool.
+Third Prize: 10% of the current prize pool.
+Fourth Prize: 5% of the current prize pool.
+Prize Distribution Method: Winners will equally divide the prize money within their respective prize tiers based on the number of winning bets.
+Drawing Time and Prize Payment
+Drawing Time: The drawing occurs at 8:30 PM daily, with numbers generated automatically through the contract.
+Prize Redemption Period: Prizes are automatically transferred to the corresponding winners' wallets after each drawing.
+Scratch-Off Lottery
+Format: A 3x3 grid where 9 numbers are randomly generated from 1-66. If one or more numbers in the bottom grid match the number generated in the top left corner, it constitutes a win.
+Cost: Each ticket costs 3U.
+Prize Amount: The winning amount is the corresponding number multiplied by 10U.
+Winners can withdraw prizes themselves, which are automatically transferred to users' wallets by the contract.
+Special Notes
+Daily Token Distribution: All purchasers receive Cashcow tokens. Daily, 3 million Cashcow tokens are generated, not based on the number of bets, but equally divided among all purchasers.
+Residual Prize Pool Distribution: The remaining unclaimed prize money from each drawing is retained in the prize pool. Monthly, 50% of the balance in the prize pool is distributed as a "Sunshine Award," equally divided among all wallets that have placed bets.
+Future Gameplays: More lottery gameplays will be developed in the future.
+Initiated by the Cashcow Foundation
+Official Twitter: @Cashcow_Pp
+Date: 2025-1-1
